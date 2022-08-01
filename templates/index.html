@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <link rel="stylesheet" href="static/style.css">
+    </head>
+    <body>
+        <h1>Hello!</h1>
+        <p>Welcome to the site, {{ name }}!</p>
+
+        {% if name == "Renee" %}
+            <h3>
+                That's an excellent name!
+            </h3>
+        {% endif %}
+
+        <a href="/poem?name={{ name }}">Get your poem</a>
+
+    </body>
+</html>
