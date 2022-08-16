@@ -1,4 +1,5 @@
-from flask import Flask, request, render_template
+from flask import Flask, render_template, request
+import json
 
 app = Flask('app')
 
@@ -6,7 +7,7 @@ ADJECTIVES =   {"a": "Awesome",
                 "b": "Beautiful",
                 "c": "Charismatic",
                 "d": "Delightful",
-                "e": "Extraordinary",
+                "e": "Extra",
                 "f": "Friendly",
                 "g": "Glamorous", 
                 "h": "Hilarious",
@@ -31,7 +32,6 @@ ADJECTIVES =   {"a": "Awesome",
                 "z": "Zesty"
                 } 
 
-
 @app.route("/")
 def home():
     name = request.args.get("name")
@@ -43,14 +43,28 @@ def poem():
     name = request.args.get("name")
     context["name"] = name
     context["words"] = get_poem_words(name)
-    
     return render_template("poem.html", context=context)
+
+@app.route("/api-poem", methods=['GET', 'POST'])
+def api_poem():
+    data = request.json
+    print(request)
+    name = data["name"]
+    poem_list = get_poem_words(name)
+    return json.dumps({'success':True, "poem-words": poem_list}), 200, {'ContentType':'application/json'}
+
+
+# def get_poem_words(name):
+#     words = []
+#     for letter in name:
+#         words.append(ADJECTIVES[letter.lower()])
+#     return words
 
 def get_poem_words(name):
     words = []
     for letter in name:
-        words.append(ADJECTIVES[letter.lower()])
+        words.append(ADJECTIVES.get(letter.lower(), ""))
     return words
 
 if __name__ == '__main__':
-    app.run(debug=True, use_reloader=True, host='0.0.0.0', port=8000)
+    app.run(debug=True, use_reloader=True, host='0.0.0.0', port=8004)
